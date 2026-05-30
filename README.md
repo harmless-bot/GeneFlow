@@ -16,7 +16,7 @@ The dashboard runs a true Genetic Algorithm in your browser (not mocked), execut
 
 ## Theoretical Background
 
-GeneFlow attempts to optimize 7 continuous parameters (ranging from 0.0 to 1.0) for a hypothetical "Antigravity" propulsion system:
+GeneFlow attempts to optimize 7 continuous parameters (ranging from 0.0 to 1.0) for a hypothetical "GeneFlow" propulsion system:
 1. `thrustVector`: Primary forward momentum scale.
 2. `massRatio`: Efficiency peaks around the golden ratio ($0.618$).
 3. `fieldPolarity`: Electromagnetic resonance scaling factor.

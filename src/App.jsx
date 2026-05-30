@@ -156,7 +156,7 @@ export default function App() {
       optimizing propulsion parameters: thrustVector, massRatio, fieldPolarity, 
       resonanceFreq, coilDensity, energyInputKW, wavePhaseDeg. 
       Write as if for a real aerospace research dashboard. Be concise and technical.`;
-    const sys = `You are an AI embedded in an antigravity research simulation. Respond with only the description text, no preamble.`;
+    const sys = `You are an AI embedded in a GeneFlow propulsion research simulation. Respond with only the description text, no preamble.`;
     try {
       const result = await callAI(prompt, sys, 120, aiMode, groqKey);
       setDescription(result);
@@ -321,7 +321,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = `antigravity-run-${Date.now()}.json`;
+    a.download = `geneflow-run-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
