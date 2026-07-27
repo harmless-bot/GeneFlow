@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { fitness, select, crossover, mutate, diversity, initPopulation } from './ga';
 import { callAI, validateGroqKey } from './ai';
 
@@ -50,7 +50,7 @@ export default function App() {
   
   // UI State
   const [description, setDescription] = useState('Initialize simulation to generate description.');
-  const [logs, setLogs] = useState([{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: Date.now() }]);
+  const [logs, setLogs] = useState([{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: 1 }]);
   const [terminalInput, setTerminalInput] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportText, setReportText] = useState('');
@@ -166,7 +166,7 @@ export default function App() {
     }
   };
 
-  const triggerAIAnalysis = async (gen, best, avg, div, bestChromo) => {
+  const triggerAIAnalysis = useCallback(async (gen, best, avg, div, bestChromo) => {
     const prompt = `Generation ${gen} complete. Best Fitness: ${best.toFixed(4)}. Avg Fitness: ${avg.toFixed(4)}. Diversity: ${div.toFixed(4)}. Best Chromosome: ${JSON.stringify(bestChromo)}. In 1-2 sentences, give a specific technical insight. Mention which parameters are converging and why.`;
     const sys = `You are a genetic algorithm analyst. Be concise and technical. No preamble, just the insight.`;
     addLog('ai', '[AI] Analyzing generation...');
@@ -176,7 +176,7 @@ export default function App() {
     } catch(e) {
       addLog('err', `[AI Error] ${e.message}`);
     }
-  };
+  }, [aiMode, groqKey]);
 
   const triggerFinalReport = async (gen, best, bestChromo) => {
     setShowReportModal(true);
@@ -232,7 +232,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
     setGaState('running');
   };
 
-  const stepGA = () => {
+  const stepGA = useCallback(() => {
     setPopulation(pop => {
       const t0 = performance.now();
       const fits = pop.map(fitness);
@@ -294,7 +294,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       
       return newPop;
     });
-  };
+  }, [config, triggerAIAnalysis]);
 
   useEffect(() => {
     if (gaState === 'running') {
@@ -302,7 +302,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       gaLoopRef.current = setTimeout(stepGA, delay);
     }
     return () => clearTimeout(gaLoopRef.current);
-  }, [gaState, population, config.speed]);
+  }, [gaState, population, config.speed, stepGA]);
 
   const exportJSON = () => {
     const data = {
@@ -333,9 +333,20 @@ Answer using this real data. Be concise (2-3 sentences max).`;
   };
 
   const isRunning = gaState === 'running';
-  const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (Math.random() * 4 - 2)) : Math.round(38 + Math.random() * 3);
-  const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (Math.random() * 150 - 75)) : Math.round(1200 + Math.random() * 25 - 12);
-  const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (Math.random() * 12 - 6)) : Math.round(25 + Math.random() * 4);
+  const [hardwareStats, setHardwareStats] = useState({ temp: 38, clockMhz: 1200, powerW: 25 });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHardwareStats({
+        temp: isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (Math.random() * 4 - 2)) : Math.round(38 + Math.random() * 3),
+        clockMhz: isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (Math.random() * 150 - 75)) : Math.round(1200 + Math.random() * 25 - 12),
+        powerW: isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (Math.random() * 12 - 6)) : Math.round(25 + Math.random() * 4)
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isRunning, genSpeedMs]);
+
+  const { temp, clockMhz, powerW } = hardwareStats;
   const memUsed = window.performance?.memory ? (window.performance.memory.usedJSHeapSize / 1e9).toFixed(2) : (1.2 + config.popSize * 0.01).toFixed(2);
   const memTotal = window.performance?.memory ? (window.performance.memory.jsHeapSizeLimit / 1e9).toFixed(2) : '4.00';
   const memPercent = Math.min(100, Math.round((parseFloat(memUsed) / parseFloat(memTotal)) * 100));
@@ -351,6 +362,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             placeholder="gsk_..." 
             value={groqKey} 
             onChange={handleKeyChange} 
+            aria-label="Groq API Key"
             style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px' }}
           />
           <span style={{ color: keyStatus === 'empty' ? 'var(--dim)' : keyStatus === 'testing' ? 'var(--amber)' : keyStatus === 'valid' ? 'var(--green)' : 'var(--red)' }}>
@@ -386,10 +398,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={`config-${c.key}`}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={`config-${c.key}`}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
@@ -514,6 +527,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             type="text" 
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
+            aria-label="Terminal input"
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
             placeholder="Ask AI about the simulation..."
           />
