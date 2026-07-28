@@ -31,7 +31,7 @@ export async function validateGroqKey(key) {
     } else {
       return { valid: false };
     }
-  } catch (err) {
+  } catch {
     return { valid: false };
   }
 }
