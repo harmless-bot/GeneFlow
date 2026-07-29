@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fitness, select, crossover, mutate, diversity, initPopulation } from './ga';
 import { callAI, validateGroqKey } from './ai';
 
@@ -50,7 +50,7 @@ export default function App() {
   
   // UI State
   const [description, setDescription] = useState('Initialize simulation to generate description.');
-  const [logs, setLogs] = useState([{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: Date.now() }]);
+  const [logs, setLogs] = useState(() => [{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: Date.now() }]);
   const [terminalInput, setTerminalInput] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportText, setReportText] = useState('');
@@ -302,6 +302,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       gaLoopRef.current = setTimeout(stepGA, delay);
     }
     return () => clearTimeout(gaLoopRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gaState, population, config.speed]);
 
   const exportJSON = () => {
@@ -333,9 +334,10 @@ Answer using this real data. Be concise (2-3 sentences max).`;
   };
 
   const isRunning = gaState === 'running';
-  const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (Math.random() * 4 - 2)) : Math.round(38 + Math.random() * 3);
-  const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (Math.random() * 150 - 75)) : Math.round(1200 + Math.random() * 25 - 12);
-  const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (Math.random() * 12 - 6)) : Math.round(25 + Math.random() * 4);
+  const pseudoRandom = (seed) => (Math.sin(generation + seed) + 1) / 2; // Returns 0-1 based on generation
+  const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (pseudoRandom(1) * 4 - 2)) : Math.round(38 + pseudoRandom(2) * 3);
+  const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (pseudoRandom(3) * 150 - 75)) : Math.round(1200 + pseudoRandom(4) * 25 - 12);
+  const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (pseudoRandom(5) * 12 - 6)) : Math.round(25 + pseudoRandom(6) * 4);
   const memUsed = window.performance?.memory ? (window.performance.memory.usedJSHeapSize / 1e9).toFixed(2) : (1.2 + config.popSize * 0.01).toFixed(2);
   const memTotal = window.performance?.memory ? (window.performance.memory.jsHeapSizeLimit / 1e9).toFixed(2) : '4.00';
   const memPercent = Math.min(100, Math.round((parseFloat(memUsed) / parseFloat(memTotal)) * 100));
@@ -351,6 +353,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             placeholder="gsk_..." 
             value={groqKey} 
             onChange={handleKeyChange} 
+            aria-label="Groq API Key"
             style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px' }}
           />
           <span style={{ color: keyStatus === 'empty' ? 'var(--dim)' : keyStatus === 'testing' ? 'var(--amber)' : keyStatus === 'valid' ? 'var(--green)' : 'var(--red)' }}>
@@ -393,6 +396,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
+                  aria-label={c.label}
                 />
               </div>
             ))}
@@ -516,6 +520,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             onChange={e => setTerminalInput(e.target.value)}
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
             placeholder="Ask AI about the simulation..."
+            aria-label="Terminal input"
           />
           <button type="submit" className="btn" style={{ marginLeft: '12px' }}>SEND ↵</button>
         </form>
