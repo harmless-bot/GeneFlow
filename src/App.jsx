@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fitness, select, crossover, mutate, diversity, initPopulation } from './ga';
 import { callAI, validateGroqKey } from './ai';
 
@@ -50,7 +50,8 @@ export default function App() {
   
   // UI State
   const [description, setDescription] = useState('Initialize simulation to generate description.');
-  const [logs, setLogs] = useState([{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: Date.now() }]);
+  const [hwStats, setHwStats] = useState({ temp: 38, clockMhz: 1200, powerW: 25, memUsed: '1.20', memTotal: '4.00', memPercent: 30 });
+  const [logs, setLogs] = useState(() => [{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: Date.now() }]);
   const [terminalInput, setTerminalInput] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportText, setReportText] = useState('');
@@ -302,7 +303,22 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       gaLoopRef.current = setTimeout(stepGA, delay);
     }
     return () => clearTimeout(gaLoopRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gaState, population, config.speed]);
+
+  useEffect(() => {
+    const isRunning = gaState === 'running';
+    const interval = setInterval(() => {
+      const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (Math.random() * 4 - 2)) : Math.round(38 + Math.random() * 3);
+      const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (Math.random() * 150 - 75)) : Math.round(1200 + Math.random() * 25 - 12);
+      const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (Math.random() * 12 - 6)) : Math.round(25 + Math.random() * 4);
+      const memUsed = window.performance?.memory ? (window.performance.memory.usedJSHeapSize / 1e9).toFixed(2) : (1.2 + config.popSize * 0.01).toFixed(2);
+      const memTotal = window.performance?.memory ? (window.performance.memory.jsHeapSizeLimit / 1e9).toFixed(2) : '4.00';
+      const memPercent = Math.min(100, Math.round((parseFloat(memUsed) / parseFloat(memTotal)) * 100));
+      setHwStats({ temp, clockMhz, powerW, memUsed, memTotal, memPercent });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [gaState, genSpeedMs, config.popSize]);
 
   const exportJSON = () => {
     const data = {
@@ -332,13 +348,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
     return '#ff4444';
   };
 
-  const isRunning = gaState === 'running';
-  const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (Math.random() * 4 - 2)) : Math.round(38 + Math.random() * 3);
-  const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (Math.random() * 150 - 75)) : Math.round(1200 + Math.random() * 25 - 12);
-  const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (Math.random() * 12 - 6)) : Math.round(25 + Math.random() * 4);
-  const memUsed = window.performance?.memory ? (window.performance.memory.usedJSHeapSize / 1e9).toFixed(2) : (1.2 + config.popSize * 0.01).toFixed(2);
-  const memTotal = window.performance?.memory ? (window.performance.memory.jsHeapSizeLimit / 1e9).toFixed(2) : '4.00';
-  const memPercent = Math.min(100, Math.round((parseFloat(memUsed) / parseFloat(memTotal)) * 100));
+  const { temp, clockMhz, powerW, memUsed, memTotal, memPercent } = hwStats;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -386,10 +396,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={`config-${c.key}`}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={`config-${c.key}`}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
