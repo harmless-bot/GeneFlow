@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fitness, select, crossover, mutate, diversity, initPopulation } from './ga';
 import { callAI, validateGroqKey } from './ai';
 
@@ -50,7 +50,7 @@ export default function App() {
   
   // UI State
   const [description, setDescription] = useState('Initialize simulation to generate description.');
-  const [logs, setLogs] = useState([{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: Date.now() }]);
+  const [logs, setLogs] = useState([{ type: 'sys', text: 'System initialized. Waiting for input...', time: new Date().toTimeString().slice(0,8), id: 1 }]);
   const [terminalInput, setTerminalInput] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportText, setReportText] = useState('');
@@ -302,6 +302,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       gaLoopRef.current = setTimeout(stepGA, delay);
     }
     return () => clearTimeout(gaLoopRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gaState, population, config.speed]);
 
   const exportJSON = () => {
@@ -333,9 +334,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
   };
 
   const isRunning = gaState === 'running';
-  const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (Math.random() * 4 - 2)) : Math.round(38 + Math.random() * 3);
-  const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (Math.random() * 150 - 75)) : Math.round(1200 + Math.random() * 25 - 12);
-  const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (Math.random() * 12 - 6)) : Math.round(25 + Math.random() * 4);
+  // Use generation as a seed for a pseudo-random value between -1 and 1
+  const pseudoRand = Math.sin(generation || 1);
+  const temp = isRunning ? Math.round(45 + (40 / (genSpeedMs / 10 + 1)) + (pseudoRand * 4 - 2)) : Math.round(38 + Math.abs(pseudoRand) * 3);
+  const clockMhz = isRunning ? Math.round(2400 + (2400 / (genSpeedMs / 5 + 1)) + (pseudoRand * 150 - 75)) : Math.round(1200 + pseudoRand * 25 - 12);
+  const powerW = isRunning ? Math.round(45 + (105 / (genSpeedMs / 5 + 1)) + (pseudoRand * 12 - 6)) : Math.round(25 + Math.abs(pseudoRand) * 4);
   const memUsed = window.performance?.memory ? (window.performance.memory.usedJSHeapSize / 1e9).toFixed(2) : (1.2 + config.popSize * 0.01).toFixed(2);
   const memTotal = window.performance?.memory ? (window.performance.memory.jsHeapSizeLimit / 1e9).toFixed(2) : '4.00';
   const memPercent = Math.min(100, Math.round((parseFloat(memUsed) / parseFloat(memTotal)) * 100));
@@ -348,6 +351,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ color: 'var(--green)' }}>🤖 AI ENGINE</span>
           <input 
             type="password" 
+            aria-label="Groq API Key"
             placeholder="gsk_..." 
             value={groqKey} 
             onChange={handleKeyChange} 
@@ -386,10 +390,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={c.key}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={c.key}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
@@ -512,6 +517,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
           <input 
             type="text" 
+            aria-label="Terminal input"
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
