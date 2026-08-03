@@ -1,0 +1,3 @@
+## 2025-08-03 - Focus Visibility and Semantic Inputs
+**Learning:** Interactive elements (like custom buttons, range inputs, and text inputs) must not disable focus visible outlines without a fallback style. Moreover, generic `<span>` elements shouldn't be used as labels for custom inputs, even when visually grouped.
+**Action:** Always verify that elements with `outline: none` have a corresponding `:focus-visible` rule, and ensure range inputs have explicit `<label htmlFor="...">` and `id` mappings.
