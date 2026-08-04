@@ -1,0 +1,3 @@
+## 2024-05-24 - [Missing Form Control Accessibility]
+**Learning:** Dashboard and scientific UI patterns in this app often omit semantic `<label>` elements for inputs (like range sliders and text inputs) and fail to properly indicate ARIA states for grouped toggle buttons, significantly degrading screen reader access to crucial control panels.
+**Action:** Always ensure that custom sliders, toggles, and data input fields are explicitly tied to semantic labels using `htmlFor` and include attributes like `aria-pressed` or `aria-label` where visual text descriptions are inadequate.
