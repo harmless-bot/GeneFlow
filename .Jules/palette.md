@@ -1,0 +1,3 @@
+## 2024-08-08 - Missing Standard Labeling in Form Controls
+**Learning:** Custom interactive UI elements in this repository (like configuration sliders and grouped speed toggles) frequently omit basic HTML `<label>` correlations (`htmlFor` binding) and ARIA states for toggle groups, creating significant friction for screen readers navigating interactive configurations.
+**Action:** When adding or auditing settings panels, proactively verify that `<input type="range">` have linked `<label>`s, and grouped toggle buttons explicitly use `role="group"` with correct `aria-pressed` definitions to broadcast state changes properly.
