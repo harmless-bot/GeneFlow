@@ -351,6 +351,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             placeholder="gsk_..." 
             value={groqKey} 
             onChange={handleKeyChange} 
+            aria-label="Groq API Key"
             style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px' }}
           />
           <span style={{ color: keyStatus === 'empty' ? 'var(--dim)' : keyStatus === 'testing' ? 'var(--amber)' : keyStatus === 'valid' ? 'var(--green)' : 'var(--red)' }}>
@@ -393,6 +394,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
+                  aria-label={c.label}
                 />
               </div>
             ))}
@@ -514,6 +516,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             type="text" 
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
+            aria-label="Terminal input"
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
             placeholder="Ask AI about the simulation..."
           />
