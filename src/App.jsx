@@ -345,8 +345,9 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       {/* Key Input Bar */}
       <div style={{ background: '#111', borderBottom: '1px solid var(--border)', padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ color: 'var(--green)' }}>🤖 AI ENGINE</span>
+          <label htmlFor="groq-key" style={{ color: 'var(--green)' }}>🤖 AI ENGINE</label>
           <input 
+            id="groq-key"
             type="password" 
             placeholder="gsk_..." 
             value={groqKey} 
@@ -386,10 +387,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
-                  <span>{config[c.key]}</span>
+                  <label htmlFor={'slider-' + c.key}>{c.label}</label>
+                  <span aria-hidden="true">{config[c.key]}</span>
                 </div>
                 <input 
+                  id={'slider-' + c.key}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
@@ -511,6 +513,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
         <form onSubmit={handleUserQuestion} style={{ display: 'flex', padding: '8px 16px', background: '#111', borderTop: '1px solid #222' }}>
           <span style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
           <input 
+            aria-label="Terminal input"
             type="text" 
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
