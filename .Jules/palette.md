@@ -1,0 +1,3 @@
+## 2024-05-18 - Configuration Sliders and State Buttons Accessibility
+**Learning:** Found a recurring pattern where custom UI controls (sliders built with range inputs, state toggle buttons) were missing fundamental a11y linkages (htmlFor/id bindings for labels) and state announcements (aria-pressed). The original implementation relied on visual cues (generic `<span>` tags, active css classes) that screen readers cannot interpret.
+**Action:** When inspecting form controls or toggle buttons in this codebase, explicitly verify the presence of `htmlFor`/`id` pairs and `aria-` state attributes, rather than assuming they are present because the components look functional.
