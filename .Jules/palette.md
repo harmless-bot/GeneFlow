@@ -1,0 +1,3 @@
+## 2023-10-25 - Custom Sliders and Toggle Accessibility
+**Learning:** Custom configuration components (like range sliders mapped over config objects) and toggle buttons mimicking radio buttons are often missing proper semantic linkage (`htmlFor`/`id`) and state indicators (`aria-pressed`). In map iterations, `id` fields must be dynamically generated to uniquely match `<label>` elements to their corresponding `<input>`.
+**Action:** When inspecting configuration dashboards, immediately check for dynamic ID generation for `<label>` linkages and ensure custom toggles have `aria-pressed` mapped to their active state.
