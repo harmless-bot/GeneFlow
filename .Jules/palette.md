@@ -1,0 +1,3 @@
+## 2024-10-24 - Accessibility properties for basic components
+**Learning:** Found that configuration sliders, toggles and inputs lacked semantic labels and ARIA attributes in this design system.
+**Action:** Adding semantic HTML labels using `<label htmlFor="id">` and corresponding `id` on inputs, and `aria-label` / `aria-pressed` for text inputs and toggle buttons respectively to improve screen reader accessibility.
