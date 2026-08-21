@@ -1,0 +1,3 @@
+## 2025-02-27 - Custom UI Element Accessibility
+**Learning:** React simulation dashboards often use raw generic elements (like `<span>` and `<div>`) coupled with inline styling for unique UI elements (like configuration sliders, specialized input forms, and segmented buttons) which frequently omit essential A11y mappings like `htmlFor` <-> `id`, native `<label>` tags, `role` groups, and visual element hiding via `aria-hidden`.
+**Action:** Ensure custom pseudo-UI components map to native HTML semantics with explicit labeling (`htmlFor`, `aria-label`), visually concealed elements are omitted from assistive tools (`aria-hidden`), and custom state elements (like toggle groups) expose states properly (e.g., `aria-pressed`).
