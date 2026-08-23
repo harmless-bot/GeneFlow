@@ -1,0 +1,3 @@
+## 2024-05-20 - Adding Accessibility to Custom UI Components
+**Learning:** Found that heavily styled React applications sometimes drop native semantic HTML tags (e.g., using `<span>` for labels) and standard attributes (e.g., missing `aria-pressed` on toggle states) to achieve their look, severely impacting screen readers and keyboard navigation.
+**Action:** Always verify that visual labels are structurally linked to inputs (`<label htmlFor="...">`) and custom toggles report their state explicitly (`aria-pressed`), rather than relying only on CSS classes like `active`.
