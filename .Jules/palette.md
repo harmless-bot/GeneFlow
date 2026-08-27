@@ -1,0 +1,3 @@
+## 2025-02-27 - Form control labeling pattern
+**Learning:** Found instances where visual labels (`<span>`) were used in place of semantic `<label>` elements for interactive inputs like range sliders, reducing screen reader discoverability. Additionally, stateful toggle buttons for config speeds lacked `aria-pressed` states to communicate active selection to assistive tech.
+**Action:** Always link visual labels explicitly to their corresponding form inputs via `htmlFor` and `id`, and ensure interactive elements that indicate state visually also express that state semantically (e.g. `aria-pressed`).
