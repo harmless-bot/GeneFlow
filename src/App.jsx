@@ -349,6 +349,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <input 
             type="password" 
             placeholder="gsk_..." 
+            aria-label="Groq API Key"
             value={groqKey} 
             onChange={handleKeyChange} 
             style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px' }}
@@ -386,19 +387,20 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={c.key}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={c.key}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
                 />
               </div>
             ))}
-            <div style={{ display: 'flex', gap: '4px', marginTop: '16px' }}>
+            <div role="group" aria-label="Generation Speed" style={{ display: 'flex', gap: '4px', marginTop: '16px' }}>
               {['slow', 'normal', 'fast'].map(s => (
-                <button key={s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} onClick={() => setConfig({...config, speed: s})}>
+                <button key={s} aria-pressed={config.speed === s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} onClick={() => setConfig({...config, speed: s})}>
                   {s.toUpperCase()}
                 </button>
               ))}
@@ -512,6 +514,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
           <input 
             type="text" 
+            aria-label="Terminal Input"
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
