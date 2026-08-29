@@ -386,10 +386,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={`config-${c.key}`}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={`config-${c.key}`}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
