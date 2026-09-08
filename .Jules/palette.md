@@ -1,0 +1,3 @@
+## 2025-02-23 - Form Accessibility Fixes
+**Learning:** React form elements using standard HTML structure frequently have missing associations. In this app, many inputs relied on adjacent generic text `span` tags rather than semantic `<label>` tags with matching `htmlFor` and `id` attributes. Additionally, some inputs relied on visual context rather than programmatic context via `aria-label`.
+**Action:** When working on generic dashboards, audit all `<input>` elements to guarantee they either have a parent `<label>`, an adjacent `<label htmlFor="id">`, or an appropriate `aria-label`. Avoid using raw `<span>` text as the only descriptor for form inputs.
