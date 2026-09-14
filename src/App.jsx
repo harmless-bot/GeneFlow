@@ -349,6 +349,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <input 
             type="password" 
             placeholder="gsk_..." 
+            aria-label="Groq API Key"
             value={groqKey} 
             onChange={handleKeyChange} 
             style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px' }}
@@ -391,6 +392,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
                 </div>
                 <input 
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
+                  aria-label={`${c.label} configuration`}
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
                 />
@@ -513,6 +515,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <input 
             type="text" 
             value={terminalInput}
+            aria-label="Terminal input for AI simulation questions"
             onChange={e => setTerminalInput(e.target.value)}
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
             placeholder="Ask AI about the simulation..."
