@@ -345,8 +345,9 @@ Answer using this real data. Be concise (2-3 sentences max).`;
       {/* Key Input Bar */}
       <div style={{ background: '#111', borderBottom: '1px solid var(--border)', padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ color: 'var(--green)' }}>🤖 AI ENGINE</span>
+          <label htmlFor="ai-key-input" style={{ color: 'var(--green)' }}>🤖 AI ENGINE</label>
           <input 
+            id="ai-key-input"
             type="password" 
             placeholder="gsk_..." 
             value={groqKey} 
@@ -386,10 +387,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={`config-${c.key}`}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={`config-${c.key}`}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
@@ -398,7 +400,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             ))}
             <div style={{ display: 'flex', gap: '4px', marginTop: '16px' }}>
               {['slow', 'normal', 'fast'].map(s => (
-                <button key={s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} onClick={() => setConfig({...config, speed: s})}>
+                <button key={s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} aria-pressed={config.speed === s} onClick={() => setConfig({...config, speed: s})}>
                   {s.toUpperCase()}
                 </button>
               ))}
@@ -512,6 +514,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
           <input 
             type="text" 
+            aria-label="Ask AI about the simulation"
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
