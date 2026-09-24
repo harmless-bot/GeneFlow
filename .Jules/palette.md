@@ -1,0 +1,3 @@
+## 2024-09-24 - Semantic Labels in Dynamic Map Rendering
+**Learning:** When dynamically generating configuration panels with `.map()` in React, developers often use generic `<span>` wrappers for the titles rather than semantic `<label>` elements connected via `htmlFor`. This breaks screen reader associations and diminishes click-target accessibility for those config inputs.
+**Action:** Always verify that mapped configuration components utilize proper `<label htmlFor="id">` tied directly to the `id="id"` of the associated input, even in highly custom styled panels.
