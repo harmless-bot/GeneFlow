@@ -351,7 +351,10 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             placeholder="gsk_..." 
             value={groqKey} 
             onChange={handleKeyChange} 
-            style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px' }}
+            aria-label="Groq API Key"
+            style={{ background: '#000', border: '1px solid var(--dim)', color: 'var(--text)', padding: '4px 8px', borderRadius: '3px', width: '200px', fontFamily: 'var(--mono)', fontSize: '11px', outline: 'none' }}
+            onFocus={(e) => e.target.style.outline = '2px solid var(--green)'}
+            onBlur={(e) => e.target.style.outline = 'none'}
           />
           <span style={{ color: keyStatus === 'empty' ? 'var(--dim)' : keyStatus === 'testing' ? 'var(--amber)' : keyStatus === 'valid' ? 'var(--green)' : 'var(--red)' }}>
             {keyStatus === 'empty' ? '○ NO KEY — DEMO MODE' : keyStatus === 'testing' ? '◌ VALIDATING...' : keyStatus === 'valid' ? '● GROQ CONNECTED — Llama 3.3 70B' : '✗ INVALID KEY — DEMO MODE'}
@@ -386,10 +389,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={`config-${c.key}`}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={`config-${c.key}`}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
@@ -514,8 +518,11 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             type="text" 
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
+            aria-label="Terminal Input"
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
             placeholder="Ask AI about the simulation..."
+            onFocus={(e) => e.target.style.outline = '2px solid var(--green)'}
+            onBlur={(e) => e.target.style.outline = 'none'}
           />
           <button type="submit" className="btn" style={{ marginLeft: '12px' }}>SEND ↵</button>
         </form>
