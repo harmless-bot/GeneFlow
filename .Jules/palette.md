@@ -1,0 +1,3 @@
+## 2024-10-16 - Semantic Labels for Custom Controls
+**Learning:** In highly customized web apps built with primitive HTML tags (`<span>`, `<div>`) instead of semantic elements, accessibility suffers and interactive elements have small hit areas. For instance, range sliders without associated `<label>`s force the user to click exactly on the small thumb instead of the descriptive text.
+**Action:** Always wrap text descriptions of inputs in `<label>` tags with a proper `htmlFor` attribute linking to the input's `id`. This expands the clickable area, drastically improving UX, especially for tiny range inputs.
