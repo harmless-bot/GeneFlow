@@ -386,19 +386,27 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             {CONFIGS_DEF.map(c => (
               <div key={c.key} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#aaa', marginBottom: '4px' }}>
-                  <span>{c.label}</span>
+                  <label htmlFor={`config-${c.key}`}>{c.label}</label>
                   <span>{config[c.key]}</span>
                 </div>
                 <input 
+                  id={`config-${c.key}`}
+                  aria-label={`${c.label} control`}
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
                 />
               </div>
             ))}
-            <div style={{ display: 'flex', gap: '4px', marginTop: '16px' }}>
+            <div role="group" aria-label="Simulation Speed Controls" style={{ display: 'flex', gap: '4px', marginTop: '16px' }}>
               {['slow', 'normal', 'fast'].map(s => (
-                <button key={s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} onClick={() => setConfig({...config, speed: s})}>
+                <button
+                  key={s}
+                  className={`btn ${config.speed === s ? 'active' : ''}`}
+                  style={{flex: 1}}
+                  aria-pressed={config.speed === s}
+                  onClick={() => setConfig({...config, speed: s})}
+                >
                   {s.toUpperCase()}
                 </button>
               ))}
@@ -509,15 +517,17 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ animation: 'blink-cursor 1s infinite', color: 'var(--green)' }}>▋</span>
         </div>
         <form onSubmit={handleUserQuestion} style={{ display: 'flex', padding: '8px 16px', background: '#111', borderTop: '1px solid #222' }}>
-          <span style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
+          <span aria-hidden="true" style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
           <input 
+            id="terminal-input"
+            aria-label="Ask AI about the simulation"
             type="text" 
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
             style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
             placeholder="Ask AI about the simulation..."
           />
-          <button type="submit" className="btn" style={{ marginLeft: '12px' }}>SEND ↵</button>
+          <button type="submit" className="btn" style={{ marginLeft: '12px' }} disabled={!terminalInput.trim()} aria-label="Send terminal message">SEND ↵</button>
         </form>
       </div>
 
