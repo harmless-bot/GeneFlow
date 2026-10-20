@@ -154,6 +154,16 @@ input[type=range]:disabled::-webkit-slider-thumb {
   background: rgba(0, 255, 136, 0.2);
 }
 
+*:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+input[type=range]:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

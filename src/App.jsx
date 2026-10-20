@@ -348,6 +348,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ color: 'var(--green)' }}>🤖 AI ENGINE</span>
           <input 
             type="password" 
+            aria-label="Groq API Key"
             placeholder="gsk_..." 
             value={groqKey} 
             onChange={handleKeyChange} 
@@ -391,6 +392,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
                 </div>
                 <input 
                   type="range" min={c.min} max={c.max} step={c.step} value={config[c.key]} 
+                  aria-label={c.label}
                   onChange={e => setConfig({...config, [c.key]: parseFloat(e.target.value)})}
                   disabled={gaState === 'running'}
                 />
@@ -398,7 +400,7 @@ Answer using this real data. Be concise (2-3 sentences max).`;
             ))}
             <div style={{ display: 'flex', gap: '4px', marginTop: '16px' }}>
               {['slow', 'normal', 'fast'].map(s => (
-                <button key={s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} onClick={() => setConfig({...config, speed: s})}>
+                <button key={s} className={`btn ${config.speed === s ? 'active' : ''}`} style={{flex: 1}} aria-pressed={config.speed === s} onClick={() => setConfig({...config, speed: s})}>
                   {s.toUpperCase()}
                 </button>
               ))}
@@ -512,9 +514,10 @@ Answer using this real data. Be concise (2-3 sentences max).`;
           <span style={{ color: 'var(--green)', marginRight: '8px' }}>&gt;</span>
           <input 
             type="text" 
+            aria-label="Terminal input"
             value={terminalInput}
             onChange={e => setTerminalInput(e.target.value)}
-            style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', outline: 'none', fontFamily: 'var(--mono)', fontSize: '11px' }} 
+            style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)', fontFamily: 'var(--mono)', fontSize: '11px' }}
             placeholder="Ask AI about the simulation..."
           />
           <button type="submit" className="btn" style={{ marginLeft: '12px' }}>SEND ↵</button>
