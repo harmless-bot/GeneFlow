@@ -1,0 +1,3 @@
+## 2024-05-24 - Semantic Form Labeling for Custom UI
+**Learning:** Custom UI components (like config sliders and terminal inputs) in this app were frequently missing proper semantic `<label>` associations (`htmlFor`) and ARIA labels. This causes screen readers to announce inputs without context, hindering accessibility.
+**Action:** Always ensure custom `<input>` elements (especially non-standard ones like ranges or terminal-style text fields) have associated `<label>` tags with matching `htmlFor` attributes, or `aria-label` when visual labels are not appropriate. Hide decorative elements (like `>`) from screen readers with `aria-hidden="true"`.
