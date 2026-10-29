@@ -1,0 +1,3 @@
+## 2024-10-29 - Accessible Form Controls in Interactive Simulations
+**Learning:** In complex interactive simulations, visual labels are frequently implemented using `<span>` elements within styled containers, breaking the programmatic connection to input controls (like text boxes and range sliders) for screen reader users and removing click-to-focus functionality.
+**Action:** Consistently replace generic `<span>` visual labels with semantic `<label htmlFor>` tags linked to unique `id` attributes on the inputs. For inputs with no visible label (e.g., inline chat prompts), always add a descriptive `aria-label` and apply `aria-hidden="true"` to adjacent decorative icons.
